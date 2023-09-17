@@ -51,7 +51,7 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
 
                 if (second_counter / digit == digit)
                     led_dot <= 1b'1;
-                else
+                end else
                     led_dot <= 1b'0;
             end else
                 // increment counter
