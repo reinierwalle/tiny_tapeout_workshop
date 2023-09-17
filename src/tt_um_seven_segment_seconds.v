@@ -13,8 +13,9 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
 
     wire reset = ! rst_n;
     wire [6:0] led_out;
+    wire led_dot;
     assign uo_out[6:0] = led_out;
-    assign uo_out[7] = 1'b0;
+    assign uo_out[7] = led_dot;
 
     // use bidirectionals as outputs
     assign uio_oe = 8'b11111111;
@@ -48,6 +49,10 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
                 if (digit == 9)
                     digit <= 0;
 
+                if (second_counter / digit == digit)
+                    led_dot <= 1b'1;
+                else
+                    led_dot <= 1b'0;
             end else
                 // increment counter
                 second_counter <= second_counter + 1'b1;
