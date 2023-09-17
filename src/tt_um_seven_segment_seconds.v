@@ -13,9 +13,8 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
 
     wire reset = ! rst_n;
     wire [6:0] led_out;
-    wire led_dot;
     assign uo_out[6:0] = led_out;
-    assign uo_out[7] = led_dot;
+    assign uo_out[7] = led_dot_reg;
 
     // use bidirectionals as outputs
     assign uio_oe = 8'b11111111;
@@ -26,6 +25,7 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
     // external clock is 10MHz, so need 24 bit counter
     reg [23:0] second_counter;
     reg [3:0] digit;
+    reg led_dot_reg;
 
     // if external inputs are set then use that as compare count
     // otherwise use the hard coded MAX_COUNT
@@ -36,6 +36,7 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
         if (reset) begin
             second_counter <= 0;
             digit <= 0;
+            led_dot_reg <= 0;
         end else begin
             // if up to 16e6
             if (second_counter == compare) begin
@@ -50,9 +51,9 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
                     digit <= 0;
 
                 if (second_counter / digit == digit)
-                    led_dot <= 1b'1;
+                    led_dot_reg <= 1;
                 end else
-                    led_dot <= 1b'0;
+                    led_dot_reg <= 0;
             end else
                 // increment counter
                 second_counter <= second_counter + 1'b1;
